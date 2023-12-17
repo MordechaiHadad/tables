@@ -5,12 +5,15 @@ export class Tables {
 
     constructor(
         id: string,
-        props: { headers: string[]; data: string[][] },
+        props: { headers: string[]; data: string[][] } = {
+            headers: [],
+            data: [],
+        },
         styling: {
             table: string[];
             tableHeaders: string[];
             tableData: string[];
-        }
+        } = { table: [], tableHeaders: [], tableData: [] }
     ) {
         this.element = document.getElementById(id)! as HTMLTableElement;
         this.element.classList.add(...styling.table);
