@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "ESNext",
+    "outDir": "build/compiled",
+    "declaration": true,
+    "strict": true,
+    "module": "esnext",
+    "noEmitOnError": true,
+    "lib": ["ESNext", "DOM"],
+    "esModuleInterop": false,
+  },
+  "include": ["src"]
+}
