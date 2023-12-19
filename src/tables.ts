@@ -1,7 +1,13 @@
 export class Tables {
-    element: HTMLTableElement;
-    props: {} = {};
-    styling: { table: string[] } = { table: [] };
+    private element: HTMLElement;
+    private elementType: ElementType;
+    private styling: {
+        tableContainer?: string[];
+        table?: string[];
+        tableHeaders?: string[];
+        tableData?: string[];
+    };
+    private _data: string[][];
 
     constructor(
         id: string,
@@ -10,13 +16,29 @@ export class Tables {
             data: [],
         },
         styling: {
-            table: string[];
-            tableHeaders: string[];
-            tableData: string[];
-        } = { table: [], tableHeaders: [], tableData: [] }
+            tableContainer?: string[];
+            table?: string[];
+            tableHeaders?: string[];
+            tableData?: string[];
+        } = { table: [], tableHeaders: [], tableData: [], tableContainer: [] }
     ) {
-        this.element = document.getElementById(id)! as HTMLTableElement;
-        this.element.classList.add(...styling.table);
+        this._data = this.createProxy(props.data);
+        this.styling = styling;
+        this.element = document.getElementById(id)!;
+        this.elementType =
+            this.element.nodeName === "TABLE"
+                ? ElementType.Table
+                : ElementType.Div;
+
+        let tableElement =
+            this.elementType === ElementType.Table
+                ? this.element
+                : document.createElement("table");
+
+        if (this.elementType === ElementType.Div && styling.tableContainer)
+            this.element.classList.add(...styling.tableContainer);
+
+        if (styling.table) tableElement.classList.add(...styling.table);
 
         // headers
         let thead = document.createElement("thead");
@@ -24,11 +46,11 @@ export class Tables {
         thead.appendChild(trHeaders);
         props.headers.forEach((value) => {
             let th = document.createElement("th");
-            th.classList.add(...styling.tableHeaders);
+            if (styling.tableHeaders) th.classList.add(...styling.tableHeaders);
             th.textContent = value;
             trHeaders.appendChild(th);
         });
-        this.element.appendChild(thead);
+        tableElement.appendChild(thead);
 
         // body
         let tbody = document.createElement("tbody");
@@ -36,12 +58,57 @@ export class Tables {
             let tr = document.createElement("tr");
             value.forEach((value) => {
                 let td = document.createElement("td");
-                td.classList.add(...styling.tableData);
+                if (styling.tableData) td.classList.add(...styling.tableData);
                 td.textContent = value;
                 tr.appendChild(td);
             });
             tbody.appendChild(tr);
         });
-        this.element.appendChild(tbody);
+        tableElement.appendChild(tbody);
+
+        if (this.elementType === ElementType.Div)
+            this.element.appendChild(tableElement);
     }
+
+    get data(): string[][] {
+        return this._data;
+    }
+
+    set data(newData: string[][]) {
+        this._data = this.createProxy(newData);
+        this.updateTable();
+    }
+
+    private createProxy(data: string[][]) {
+        return new Proxy(data, {
+            set: (target, property, value) => {
+                Reflect.set(target, property, value);
+                if (property.toString() === "length") this.updateTable();
+                return true;
+            },
+        });
+    }
+
+    private updateTable() {
+        // Clear the table body
+        this.element.querySelector("tbody")!.innerHTML = "";
+
+        // Add new rows based on the current data
+        this._data.forEach((value) => {
+            let tr = document.createElement("tr");
+            value.forEach((value) => {
+                let td = document.createElement("td");
+                if (this.styling.tableData)
+                    td.classList.add(...this.styling.tableData);
+                td.textContent = value;
+                tr.appendChild(td);
+            });
+            this.element.querySelector("tbody")!.appendChild(tr);
+        });
+    }
+}
+
+enum ElementType {
+    Table,
+    Div,
 }
