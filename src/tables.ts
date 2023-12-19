@@ -6,21 +6,30 @@ export class Tables {
         table?: string[];
         tableHeaders?: string[];
         tableData?: string[];
+        tableCaption?: string[];
     };
     private _data: string[][];
 
     constructor(
         id: string,
-        props: { headers: string[]; data: string[][] } = {
+        props: { headers: string[]; data: string[][]; caption: string } = {
             headers: [],
             data: [],
+            caption: "",
         },
         styling: {
             tableContainer?: string[];
             table?: string[];
             tableHeaders?: string[];
             tableData?: string[];
-        } = { table: [], tableHeaders: [], tableData: [], tableContainer: [] }
+            tableCaption?: string[];
+        } = {
+            table: [],
+            tableHeaders: [],
+            tableData: [],
+            tableContainer: [],
+            tableCaption: [],
+        }
     ) {
         this._data = this.createProxy(props.data);
         this.styling = styling;
@@ -64,6 +73,16 @@ export class Tables {
             });
             tbody.appendChild(tr);
         });
+
+        if (props.caption && props.caption.length > 0) {
+            let caption = document.createElement("caption");
+            caption.textContent = props.caption;
+
+            if (styling.tableCaption)
+                caption.classList.add(...styling.tableCaption);
+
+            tableElement.appendChild(caption);
+        }
         tableElement.appendChild(tbody);
 
         if (this.elementType === ElementType.Div)
