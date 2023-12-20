@@ -1,6 +1,6 @@
 {
     "name": "@mordechaihadad/tables",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": "A simple vanilla table library.",
     "main": "dist/index.js",
     "type": "module",
@@ -19,7 +19,7 @@
         "grid"
     ],
     "author": "Mordechai Hadad",
-    "license": "ISC",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/MordechaiHadad/tables/issues"
     },
