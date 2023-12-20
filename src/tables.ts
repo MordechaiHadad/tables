@@ -12,7 +12,7 @@ export class Tables {
 
     constructor(
         id: string,
-        props: { headers: string[]; data: string[][]; caption: string } = {
+        props: { headers: string[]; data: string[][]; caption?: string } = {
             headers: [],
             data: [],
             caption: "",
