@@ -1,5 +1,5 @@
 {
-    "name": "tables",
+    "name": "@mordechaihadad/tables",
     "version": "1.0.0",
     "description": "A simple vanilla table library.",
     "main": "dist/index.js",
